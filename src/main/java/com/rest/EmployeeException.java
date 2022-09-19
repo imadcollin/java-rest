@@ -1,4 +1,4 @@
-package exceptionsHandling;
+package com.rest;
 
 public class EmployeeException extends RuntimeException {
 

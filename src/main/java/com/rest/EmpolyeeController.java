@@ -1,7 +1,5 @@
-package controller;
+package com.rest;
 
-import entities.Employee;
-import exceptionsHandling.EmployeeException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,10 +7,16 @@ import java.util.List;
 @RestController
 public class EmpolyeeController {
 
-    private final EmployeeReposotry repository;
+    private EmployeeReposotry repository;
 
-    EmpolyeeController(EmployeeReposotry repository) {
+
+    public EmpolyeeController(EmployeeReposotry repository) {
+
         this.repository = repository;
+    }
+
+    public EmpolyeeController() {
+
     }
 
     @GetMapping("/")
