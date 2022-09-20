@@ -1,8 +1,14 @@
 package com.rest;
 
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class EmpolyeeController {
@@ -20,36 +26,43 @@ public class EmpolyeeController {
     }
 
     @GetMapping("/")
-    public String s() {
-        return "test";
+    public String home() {
+        return "Home Page";
     }
 
-    @GetMapping("/test")
-    public String ee() {
-        return "test";
+    @GetMapping("/about")
+    public String about() {
+        return "About Us Page";
     }
 
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping("/employees")
-    List<Employee> all() {
-        return repository.findAll();
+    CollectionModel<EntityModel<Employee>> all() {
+
+        List<EntityModel<Employee>> employees = repository.findAll().stream()
+                .map(employee -> EntityModel.of(employee,
+                        linkTo(methodOn(EmpolyeeController.class).one(employee.getId())).withSelfRel(),
+                        linkTo(methodOn(EmpolyeeController.class).all()).withRel("employees")))
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(employees, linkTo(methodOn(EmpolyeeController.class).all()).withSelfRel());
     }
-    // end::get-aggregate-root[]
 
     @PostMapping("/employees")
-    Employee newEmployee(@RequestBody Employee newEmployee) {
+    Employee newEmployee(@RequestParam Employee newEmployee) {
+        System.out.println(newEmployee.getId());
+
         return repository.save(newEmployee);
     }
 
     // Single item
 
+    /*
     @GetMapping("/employees/{id}")
     Employee one(@PathVariable Long id) {
-
         return repository.findById(id)
                 .orElseThrow(() -> new EmployeeException(id));
     }
+     */
 
     @PutMapping("/employees/{id}")
     Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
@@ -64,6 +77,17 @@ public class EmpolyeeController {
                     newEmployee.setId(id);
                     return repository.save(newEmployee);
                 });
+    }
+
+    @GetMapping("/employees/{id}")
+    EntityModel<Employee> one(@PathVariable Long id) {
+
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new EmployeeException(id));
+
+        return EntityModel.of(employee,
+                linkTo(methodOn(EmpolyeeController.class).one(id)).withSelfRel(),
+                linkTo(methodOn(EmpolyeeController.class).all()).withRel("employees"));
     }
 
     @DeleteMapping("/employees/{id}")
