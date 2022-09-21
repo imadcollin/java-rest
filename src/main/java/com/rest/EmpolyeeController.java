@@ -1,5 +1,6 @@
 package com.rest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
@@ -12,17 +13,23 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class EmpolyeeController {
-
+    @Autowired
     private EmployeeReposotry repository;
+    private static EmpolyeeController instance;
 
-
-    public EmpolyeeController(EmployeeReposotry repository) {
+    public void setRepo(EmployeeReposotry repository) {
 
         this.repository = repository;
     }
 
     public EmpolyeeController() {
+    }
 
+    public static EmpolyeeController getInstance() {
+        if (instance == null) {
+            return new EmpolyeeController();
+        }
+        return instance;
     }
 
     @GetMapping("/")
@@ -46,6 +53,7 @@ public class EmpolyeeController {
 
         return CollectionModel.of(employees, linkTo(methodOn(EmpolyeeController.class).all()).withSelfRel());
     }
+/*
 
     @PostMapping("/employees")
     Employee newEmployee(@RequestParam Employee newEmployee) {
@@ -53,6 +61,7 @@ public class EmpolyeeController {
 
         return repository.save(newEmployee);
     }
+ */
 
     // Single item
 
