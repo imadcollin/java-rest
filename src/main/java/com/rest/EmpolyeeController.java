@@ -3,6 +3,8 @@ package com.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -92,6 +94,26 @@ public class EmpolyeeController {
                 });
     }
 
+    @PutMapping("/addEmployee/{id}")
+    ResponseEntity<?> replace(@RequestBody Employee newEmployee, @PathVariable Long id) {
+
+        Employee updatedEmployee = repository.findById(id) //
+                .map(employee -> {
+                    employee.setName(newEmployee.getName());
+                    employee.setRole(newEmployee.getRole());
+                    return repository.save(employee);
+                }) //
+                .orElseGet(() -> {
+                    newEmployee.setId(id);
+                    return repository.save(newEmployee);
+                });
+
+        EntityModel<Employee> entityModel = employeeModelAssembler.toModel(updatedEmployee);
+
+        return ResponseEntity //
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
+                .body(entityModel);
+    }
 
     @GetMapping("/employees/{id}")
     EntityModel<Employee> one(@PathVariable Long id) {
@@ -116,5 +138,17 @@ public class EmpolyeeController {
     @DeleteMapping("/employees/{id}")
     void deleteEmployee(@PathVariable Long id) {
         repository.deleteById(id);
+    }
+
+    @PostMapping("/employees")
+    ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee
+
+    ) {
+
+        EntityModel<Employee> entityModel = employeeModelAssembler.toModel(repository.save(newEmployee));
+
+        return ResponseEntity //
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
+                .body(entityModel);
     }
 }

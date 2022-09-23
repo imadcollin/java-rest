@@ -15,8 +15,8 @@ public class LoadData {
     CommandLineRunner initDatabase(EmployeeReposotry repository) {
         log.info("loading data .... ");
         return args -> {
-            repository.save(new Employee("Bilbo Baggins", "burglar"));
-            repository.save(new Employee("Frodo Baggins", "thief"));
+            repository.save(new Employee("Bilbo Baggins", "burglar", "Musical"));
+            repository.save(new Employee("Frodo Baggins", "thief", "Solider"));
         };
     }
 }
