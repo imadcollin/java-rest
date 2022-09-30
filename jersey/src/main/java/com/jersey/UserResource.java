@@ -94,4 +94,3 @@ public class UserResource {
         DB.put(user2.getId(), user2);
     }
 }
-}
