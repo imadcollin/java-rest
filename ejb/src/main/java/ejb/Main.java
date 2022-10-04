@@ -25,7 +25,7 @@ public class Main {
                 new BufferedReader(new InputStreamReader(System.in));
     }
 
-    public static void main(String[] args) throws NamingException {
+    public static void main(String[] args)  {
         Main main = new Main();
 
         // Context context = new InitialContext();
