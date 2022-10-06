@@ -22,6 +22,7 @@
             <artifactId>spring-boot</artifactId>
         </dependency>
     </dependencies>
+    <packaging>war</packaging>
 
     <build>
         <plugins>
