@@ -7,6 +7,7 @@
 		<module>jersey</module>
 		<module>ejb</module>
         <module>wildfly</module>
+        <module>servlet</module>
     </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
