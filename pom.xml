@@ -8,6 +8,7 @@
 		<module>ejb</module>
         <module>wildfly</module>
         <module>servlet</module>
+        <module>vaddin</module>
     </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
